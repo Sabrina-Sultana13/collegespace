@@ -22,22 +22,6 @@ const sidebarNavItems = [
     title: 'Personal Information',
     href: '/settings/personal-information',
   },
-  {
-    title: 'Educational information',
-    href: '/settings/education',
-  },
-  {
-    title: 'Projects',
-    href: '/settings/projects',
-  },
-  {
-    title: 'Skills',
-    href: '/settings/skills',
-  },
-  {
-    title: 'Experience',
-    href: '/settings/experience',
-  },
 ];
 
 interface SettingsLayoutProps {
