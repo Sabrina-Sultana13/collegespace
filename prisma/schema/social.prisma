@@ -1,0 +1,55 @@
+model Post {
+    id        String   @id @default(uuid())
+    type      PostType
+    content   String   @db.VarChar(256)
+    createdAt DateTime @default(now())
+    userId    String
+    likes     Like[]
+    replies   Reply[]
+    reposts   Repost[]
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([createdAt, id])
+    @@index([userId])
+}
+
+enum PostType {
+    thought
+    question
+}
+
+model Repost {
+    userId String
+    postId String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+    post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+    @@id([userId, postId])
+    @@index([userId])
+    @@index([postId])
+}
+
+model Like {
+    userId String
+    postId String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+    Post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+    @@id([userId, postId])
+    @@index([userId])
+    @@index([postId])
+}
+
+model Reply {
+    id        String   @id @default(uuid())
+    content   String   @db.VarChar(128)
+    createdAt DateTime @default(now())
+    userId    String
+    postId    String
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    Post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+    @@unique([createdAt, id])
+    @@index([userId])
+    @@index([postId])
+}

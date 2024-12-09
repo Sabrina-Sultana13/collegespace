@@ -1,0 +1,79 @@
+model StudentDetails {
+    studentId   String       @map("userId")
+    dob         DateTime
+    gender      GenderType
+    country     String       @db.VarChar(60)
+    about       String       @db.Text
+    experience  Int          @default(0) @db.SmallInt
+    skills      String?
+    educations  Education[]
+    projects    Project[]
+    experiences Experience[]
+
+    user User @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+    @@id([studentId])
+    @@index([studentId])
+}
+
+enum GenderType {
+    male
+    female
+}
+
+model Project {
+    title       String   @db.VarChar(101)
+    description String   @db.Text
+    website     String?  @db.VarChar(100)
+    startDate   DateTime
+    endDate     DateTime
+
+    studentId String
+    student   StudentDetails? @relation(fields: [studentId], references: [studentId], onDelete: Cascade)
+
+    @@unique([studentId, title])
+    @@index([studentId])
+}
+
+model Education {
+    id        String   @id @default(uuid())
+    school    String   @db.VarChar(101)
+    degree    String   @db.VarChar(51)
+    field     String   @db.VarChar(51)
+    startDate DateTime
+    endDate   DateTime
+    grade     Float
+
+    studentId String
+    student   StudentDetails @relation(fields: [studentId], references: [studentId], onDelete: Cascade)
+
+    @@index([studentId])
+}
+
+model Experience {
+    title       String   @db.VarChar(101)
+    description String   @db.Text
+    position    String   @db.VarChar(51)
+    type        JobType
+    startDate   DateTime
+    endDate     DateTime
+
+    studentId String
+    student   StudentDetails @relation(fields: [studentId], references: [studentId], onDelete: Cascade)
+
+    @@unique([studentId, title])
+    @@index([studentId])
+}
+
+model Bounty {
+    title       String   @db.VarChar(51)
+    description String   @db.Text
+    reward      Int
+    deadline    DateTime
+    createdAt   DateTime @default(now())
+    userId      String
+    user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([userId, title])
+    @@index([userId])
+}

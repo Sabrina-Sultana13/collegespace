@@ -1,0 +1,16 @@
+model Notification {
+    content String @db.VarChar(256)
+
+    hasRead Boolean @default(false)
+
+    postId       String?
+    interactorId String?
+
+    createdAt DateTime @default(now())
+
+    userId String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@id([createdAt, userId])
+    @@index([userId])
+}
