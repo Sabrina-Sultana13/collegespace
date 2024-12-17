@@ -38,6 +38,10 @@ const sidebarNavItems = [
     title: 'Experience',
     href: '/settings/experience',
   },
+  {
+    title: 'Company',
+    href: '/settings/company',
+  },
 ];
 
 interface SettingsLayoutProps {
