@@ -44,11 +44,6 @@ const Navbar = () => {
       icon: Notification1,
     },
     {
-      href: '/messages',
-      label: 'Messages',
-      icon: Message,
-    },
-    {
       href: '/jobs',
       label: 'Jobs',
       icon: Briefcase,

@@ -85,14 +85,14 @@ const MoreOptions = () => {
           <Text>Switch Appearance</Text>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        {tools.map((tool) => (
+        {/* {tools.map((tool) => (
           <Link href={tool.href} key={tool.label}>
             <DropdownMenuItem>
               <tool.icon className='mr-2 h-4 w-4' aria-label={tool.label} />
               <Text>{tool.label}</Text>
             </DropdownMenuItem>
           </Link>
-        ))}
+        ))} */}
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           {links.map((link) => (

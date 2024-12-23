@@ -16,7 +16,7 @@ const BountyActions = ({ bounty }: { bounty: BountyType }) => {
       ) : (
         <>
           <SendEmail email={bounty?.creator_email} />
-          <SendMessage />
+          {/* <SendMessage /> */}
         </>
       )}
     </Flex>
