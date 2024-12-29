@@ -44,7 +44,7 @@ const FollowCounts = () => {
           >
             <FollowPlaceholder
               follower={user?._count?.followers}
-              following={user?._count?.follows}
+              following={user?._count?.following}
             />
           </Button>
         </FollowingDialog>
