@@ -50,7 +50,7 @@ interface SettingsLayoutProps {
 
 export default function SettingsLayout({ children }: SettingsLayoutProps) {
   return (
-    <Container className='max-w-3xl p-9'>
+    <Container className='max-w-3xl p-9 pt-0'>
       <Flex direction='column'>
         <Box className='col-span-2 space-y-0.5'>
           <Heading size='2xl' weight='bold' className='tracking-tight'>

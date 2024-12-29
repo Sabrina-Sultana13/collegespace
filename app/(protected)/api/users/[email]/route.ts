@@ -21,6 +21,7 @@ export async function GET(request: NextRequest, props: { params: Promise<{ email
       coverImage: true,
       createdAt: true,
       bounties: true,
+      company: true,
       _count: { select: { followers: true, follows: true, posts: true } },
     },
   });
