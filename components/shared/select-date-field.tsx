@@ -37,9 +37,9 @@ const SelectDateField = ({
       control={form.control}
       name={name}
       render={({ field }) => (
-        <FormItem className='flex flex-col'>
+        <FormItem className="flex flex-col">
           <FormLabel>{label}</FormLabel>
-          <Popover>
+          <Popover modal>
             <PopoverTrigger asChild>
               <FormControl>
                 <Button
@@ -58,10 +58,15 @@ const SelectDateField = ({
                 </Button>
               </FormControl>
             </PopoverTrigger>
-            <PopoverContent className='w-auto p-0' align='start'>
+            <PopoverContent 
+              className="w-auto p-0" 
+              align="start"
+              sideOffset={4}
+              style={{ zIndex: 9999 }}
+            >
               <Calendar
-                mode='single'
-                selected={new Date(field.value ?? '')}
+                mode="single"
+                selected={field.value ? new Date(field.value) : undefined}
                 onSelect={field.onChange}
                 disabled={(date) =>
                   futureOnly
