@@ -7,10 +7,12 @@ import { Button, buttonVariants } from '@/components/ui/button';
 import { VariantProps } from 'class-variance-authority';
 import usePosts from '@/hooks/usePosts';
 
-interface FollowButtonProps extends VariantProps<typeof buttonVariants> {
+interface FollowButtonProps {
   userId: string;
-  className?: string;
+  variant?: VariantProps<typeof buttonVariants>['variant'];
   isFollowing?: boolean;
+  className?: string;
+  onOptimisticUpdate?: (newFollowingState: boolean) => void;
   asChild?: boolean;
 }
 
