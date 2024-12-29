@@ -46,21 +46,23 @@ const SkillsForm = ({ skills }: { skills: string[] }) => {
   });
 
   function onSubmit(data: SkillFormValues) {
-    const payload = {
-      skills: data?.skills?.map((item) => item.value).join(','),
+    const formData = new FormData();
+    
+    const submitData = {
+      skills: data?.skills?.map((item) => item.value) || []
     };
+
+    formData.append('data', JSON.stringify(submitData));
+
     toast.promise(
       fetch('/api/student-details', {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
+        body: formData,
       }),
       {
-        loading: 'Updating personal information...',
-        success: 'Personal information updated!',
-        error: 'Something went wrong',
+        loading: 'Updating skills...',
+        success: 'Skills updated successfully!',
+        error: 'Failed to update skills',
       }
     );
   }

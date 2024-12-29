@@ -11,17 +11,19 @@ export async function PATCH(request: NextRequest) {
     const cvFile = formData.get('cv') as File | null;
     const data = JSON.parse(formData.get('data') as string);
 
+    // Normalize the data structure
+    const normalizedData = {
+      ...data,
+      // If skills exist in data, store them as a string
+      ...(data.skills && { skills: data.skills.join(',') }),
+    };
+
     let cvUrl: string | undefined;
     
     if (cvFile) {
-      // Convert File to Buffer
       const bytes = await cvFile.arrayBuffer();
       const buffer = Buffer.from(bytes);
-
-      // Delete existing CV if it exists
       await deleteCV(currentUser.id);
-      
-      // Upload new CV
       cvUrl = await uploadCV(buffer, currentUser.id);
     }
 
@@ -31,9 +33,9 @@ export async function PATCH(request: NextRequest) {
 
     if (studentDetailsExists) {
       const studentDetails = await prisma.studentDetails.update({
-        where: { studentId: studentDetailsExists.studentId },
+        where: { studentId: currentUser.id },
         data: {
-          ...data,
+          ...normalizedData,
           ...(cvUrl && { cv: cvUrl }),
         },
       });
@@ -42,7 +44,7 @@ export async function PATCH(request: NextRequest) {
 
     const studentDetails = await prisma.studentDetails.create({
       data: {
-        ...data,
+        ...normalizedData,
         ...(cvUrl && { cv: cvUrl }),
         user: {
           connect: {
