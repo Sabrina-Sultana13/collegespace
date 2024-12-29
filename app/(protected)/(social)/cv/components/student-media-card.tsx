@@ -11,11 +11,13 @@ const StudentMediaCard = ({
   image,
   coverImage,
   bio,
+  cv,
 }: {
   name: string;
   image: string;
   coverImage: string;
   bio: string;
+  cv: string | null | undefined;
 }) => {
   return (
     <Card className='isolate h-auto overflow-hidden shadow-none'>
@@ -33,12 +35,14 @@ const StudentMediaCard = ({
           >
             {bio ?? 'No bio provided'}
           </Text>
-          <Button size='lg' className='mt-4 w-full'>
-            <Flex gap={2} align='center'>
-              <Download className='h-5 w-5' />
-              <Text>Download CV</Text>
-            </Flex>
-          </Button>
+          <a href={cv ?? ''} target='_blank' className='w-full'>
+            <Button size='lg' className='mt-4 w-full' disabled={!cv}>
+              <Flex gap={2} align='center'>
+                <Download className='h-5 w-5' />
+                <Text>Download CV</Text>
+              </Flex>
+            </Button>
+          </a>
         </Flex>
       </CardContent>
     </Card>

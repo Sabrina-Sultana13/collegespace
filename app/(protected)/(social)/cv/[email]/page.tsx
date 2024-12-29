@@ -1,4 +1,4 @@
-'use client';;
+'use client';
 
 import StudentMediaCard from '../components/student-media-card';
 import { Box } from '@/components/layout/box';
@@ -33,6 +33,7 @@ export default function CVPage(props: CVPageProps) {
     country: studentDetails?.country,
     gender: studentDetails?.gender,
     dob: studentDetails?.dob,
+    cv: studentDetails?.cv,
   };
 
   const tabsContent = [
@@ -62,6 +63,7 @@ export default function CVPage(props: CVPageProps) {
           image={data?.image!}
           coverImage={data?.coverImage!}
           bio={data?.bio!}
+          cv={studentDetails?.cv}
         />
         <StudentInfoCard informations={informations} />
         {studentDetails?.skills && (
