@@ -7,8 +7,11 @@ import { Form } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import PersonalInfoFormFields from './personal-info-form-fields';
 import { personalInfoFormSchema, PersonalInfoFormValues } from './schema';
+import { useState } from 'react';
 
 const PersonalInfoForm = ({ data }: { data: UserType }) => {
+  const [isUploading, setIsUploading] = useState(false);
+
   const defaultValues: Partial<PersonalInfoFormValues> = {
     name: data?.name ?? '',
     email: data?.email ?? '',
@@ -26,50 +29,63 @@ const PersonalInfoForm = ({ data }: { data: UserType }) => {
     mode: 'onBlur',
   });
 
-  function onSubmit(data: PersonalInfoFormValues) {
+  async function onSubmit(data: PersonalInfoFormValues) {
     const changedValues = form.formState.dirtyFields;
 
     if (!Object.keys(changedValues).length) {
       return;
     }
 
-    const changedValuesObj = Object.keys(changedValues).reduce(
-      (result, key) => ({
-        ...result,
-        [key]:
-          key === 'experience'
-            ? parseInt(
-                data[key as keyof PersonalInfoFormValues]?.toString() ?? '0',
-                10
-              )
-            : data[key as keyof PersonalInfoFormValues],
-      }),
-      {}
-    );
+    setIsUploading(true);
+    const formData = new FormData();
 
-    let payload = {};
-
-    if (data.country) {
-      payload = {
-        ...changedValuesObj,
-        country: data.country,
-      };
-    }
-
-    toast.promise(
-      fetch('/api/student-details', {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      }),
-      {
-        loading: 'Updating personal information...',
-        success: 'Personal information updated!',
-        error: 'Something went wrong',
+    try {
+      if (data.cv instanceof File) {
+        formData.append('cv', data.cv);
       }
-    );
+
+      const changedValuesObj = Object.keys(changedValues).reduce(
+        (result, key) => {
+          if (key !== 'cv') {
+            return {
+              ...result,
+              [key]:
+                key === 'experience'
+                  ? parseInt(
+                      data[key as keyof PersonalInfoFormValues]?.toString() ??
+                        '0',
+                      10
+                    )
+                  : data[key as keyof PersonalInfoFormValues],
+            };
+          }
+          return result;
+        },
+        {} as Partial<PersonalInfoFormValues>
+      );
+
+      if (data.country) {
+        changedValuesObj.country = data.country;
+      }
+
+      formData.append('data', JSON.stringify(changedValuesObj));
+
+      await toast.promise(
+        fetch('/api/student-details', {
+          method: 'PATCH',
+          body: formData,
+        }),
+        {
+          loading: 'Updating personal information...',
+          success: 'Personal information updated!',
+          error: 'Something went wrong',
+        }
+      );
+    } catch (error) {
+      console.error('Error updating:', error);
+    } finally {
+      setIsUploading(false);
+    }
   }
 
   const isDisabled =
@@ -80,8 +96,12 @@ const PersonalInfoForm = ({ data }: { data: UserType }) => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8 p-2'>
-        <PersonalInfoFormFields form={form} />
-        <Button type='submit' disabled={isDisabled}>
+        <PersonalInfoFormFields
+          form={form}
+          currentCV={data?.studentDetails?.cv ?? undefined}
+          isUploading={isUploading}
+        />
+        <Button type='submit' disabled={isDisabled || isUploading}>
           Update
         </Button>
       </form>

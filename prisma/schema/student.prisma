@@ -5,6 +5,7 @@ model StudentDetails {
     country     String       @db.VarChar(60)
     about       String       @db.Text
     experience  Int          @default(0) @db.SmallInt
+    cv          String?
     skills      String?
     educations  Education[]
     projects    Project[]

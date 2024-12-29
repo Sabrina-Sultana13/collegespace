@@ -1,23 +1,28 @@
 import * as z from 'zod';
 
+const MAX_FILE_SIZE = 5000000; // 5MB
+const ACCEPTED_FILE_TYPES = ['application/pdf'];
+
 export const personalInfoFormSchema = z.object({
   name: z.string(),
-  email: z.string(),
+  email: z.string().email(),
   phone: z.string(),
-  dob: z
-    .date({ required_error: 'Date of birth is required.' })
-    .or(z.string())
-    .or(z.undefined()),
-  gender: z.string({
-    required_error: 'Please select a gender.',
-  }),
-  country: z.string({
-    required_error: 'Please select a country.',
-  }),
-  about: z
-    .string({ required_error: 'About is required.' })
-    .max(999, { message: 'About must not be longer than 1000 characters.' }),
-  experience: z.string().or(z.number()),
+  dob: z.date().or(z.string()),
+  gender: z.string(),
+  country: z.string().min(1, 'Please select a country'),
+  about: z.string().max(1000),
+  experience: z.number().min(0).max(10).or(z.string()),
+  cv: z
+    .any()
+    .refine(
+      (file) => !file || file?.size <= MAX_FILE_SIZE,
+      'Max file size is 5MB.'
+    )
+    .refine(
+      (file) => !file || ACCEPTED_FILE_TYPES.includes(file?.type),
+      'Only PDF files are accepted.'
+    )
+    .optional(),
 });
 
 export type PersonalInfoFormValues = z.infer<typeof personalInfoFormSchema>;

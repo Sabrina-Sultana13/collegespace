@@ -41,14 +41,16 @@ const ProfileForm = ({ user }: { user: UserType }) => {
       {}
     );
 
-    if (changedValuesObj.image) {
-      changedValuesObj.image = await uploadImage(changedValuesObj.image);
+    if (changedValuesObj.image instanceof File) {
+      const pfp = await uploadImage(changedValuesObj.image);
+      console.log(pfp);
+      changedValuesObj.image = pfp;
     }
 
-    if (changedValuesObj.coverImage) {
-      changedValuesObj.coverImage = await uploadImage(
-        changedValuesObj.coverImage
-      );
+    if (changedValuesObj.coverImage instanceof File) {
+      const coverImage = await uploadImage(changedValuesObj.coverImage);
+      console.log(coverImage);
+      changedValuesObj.coverImage = coverImage;
     }
 
     toast.promise(
