@@ -63,11 +63,7 @@ const UserItem = ({ user, profileHover, followButton }: UserItemProps) => {
         </Flex>
       </Flex>
       {followButton && (
-        <FollowButton
-          variant='outline'
-          userId={user?.id!}
-          isFollowing={user.isFollowing}
-        />
+        <FollowButton userId={user?.id!} isFollowing={user.isFollowing} />
       )}
     </Flex>
   );

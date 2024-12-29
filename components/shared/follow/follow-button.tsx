@@ -1,5 +1,4 @@
 'use client';
-
 import { toast } from 'sonner';
 import { useState } from 'react';
 import Loader from '../loader';
@@ -7,97 +6,61 @@ import { cn } from '@/lib/utils';
 import { Button, buttonVariants } from '@/components/ui/button';
 import { VariantProps } from 'class-variance-authority';
 import usePosts from '@/hooks/usePosts';
-import { UserPlus, UserMinus } from 'lucide-react';
 
-interface FollowButtonProps extends VariantProps<typeof buttonVariants> {
+interface FollowButtonProps {
   userId: string;
-  className?: string;
+  variant?: VariantProps<typeof buttonVariants>['variant'];
   isFollowing?: boolean;
+  className?: string;
+  onOptimisticUpdate?: (newFollowingState: boolean) => void;
   asChild?: boolean;
-  onOptimisticUpdate?: (isFollowing: boolean) => void;
 }
 
 const FollowButton = ({
   userId,
+  variant = 'outline',
   className,
   isFollowing,
   asChild,
-  onOptimisticUpdate,
-  ...props
 }: FollowButtonProps) => {
-  const { mutate } = usePosts();
-  const [following, setFollowing] = useState(isFollowing);
   const [loading, setLoading] = useState(false);
-
-  async function handleFollow() {
-    // Optimistically update the UI
-    const previousState = following;
-    setFollowing(!following);
-    onOptimisticUpdate?.(!following);
+  const [label, setLabel] = useState(isFollowing ? 'Unfollow' : 'Follow');
+  const { mutate } = usePosts();
+  function handleFollow() {
     setLoading(true);
-
-    try {
-      const response = await fetch(`/api/users/follow/${userId}`, {
+    toast.promise(
+      fetch(`/api/users/follow/${userId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-      });
-
-      if (!response.ok) throw new Error('Failed to update follow status');
-
-      const data = await response.json();
-      mutate();
-      toast.success(data.message);
-    } catch (error) {
-      // Revert optimistic update on error
-      setFollowing(previousState);
-      onOptimisticUpdate?.(previousState || false);
-      toast.error('Something went wrong!');
-    } finally {
-      setLoading(false);
-    }
+      }).then((res) => res.json()),
+      {
+        loading: label + 'ing...',
+        success: (data) => {
+          mutate();
+          setLoading(false);
+          setLabel(data.action);
+          return data.message;
+        },
+        error: 'Something went wrong!',
+      }
+    );
   }
 
   return !asChild ? (
     <Button
-      variant={props.variant || (isFollowing ? 'outline' : 'default')}
+      variant={variant}
       size='sm'
       onClick={handleFollow}
-      className={cn('capitalize', className)}
+      className={cn('w-20 capitalize', className)}
       disabled={loading}
     >
-      {loading ? (
-        <div className='flex items-center gap-2'>
-          <Loader
-            className={cn('h-4 w-4', {
-              'text-white': !following,
-              'text-muted-foreground': following,
-            })}
-          />
-          <span>{!following ? 'Unfollowing...' : 'Following...'}</span>
-        </div>
-      ) : following ? (
-        <span className='flex items-center gap-2'>
-          <UserMinus className=' h-4 w-4' />
-          Unfollow
-        </span>
-      ) : (
-        <span className='flex items-center gap-2'>
-          <UserPlus className=' h-4 w-4' />
-          Follow
-        </span>
-      )}
+      {loading ? <Loader className='h-4 w-4 text-muted-foreground' /> : label}
     </Button>
   ) : (
     <span onClick={handleFollow}>
-      {loading ? (
-        <Loader className='h-4 w-4' />
-      ) : following ? (
-        'Unfollow'
-      ) : (
-        'Follow'
-      )}
+      {loading ? <Loader className='h-4 w-4' /> : label}
     </span>
   );
 };
