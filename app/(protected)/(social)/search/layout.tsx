@@ -15,7 +15,7 @@ interface PostLayoutProps {
 
 export default function PostLayout({ children }: PostLayoutProps) {
   return (
-    <Box mx='auto' className='page-width mt-6'>
+    <Box mx='auto' className='page-width'>
       <Container>
         <SectionHeading
           title='Search'

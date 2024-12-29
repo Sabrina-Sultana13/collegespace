@@ -59,6 +59,7 @@ export interface BountyType extends Bounty {
   creator_createdAt?: Date;
   creator_username?: string;
   creator_image?: string;
+  user: UserType;
 }
 
 export interface UserType extends User {
@@ -69,7 +70,7 @@ export interface UserType extends User {
   bounties: BountyType[];
   _count?: {
     followers: number;
-    following: number;
+    follows: number;
   };
   isFollowing?: boolean;
 }

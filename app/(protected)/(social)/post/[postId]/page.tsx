@@ -1,5 +1,4 @@
-'use client';;
-import { use } from "react";
+'use client';
 
 import { ReplyType } from '@/lib/type';
 import usePosts from '@/hooks/usePosts';
@@ -11,8 +10,12 @@ import ReplyItem from '@/components/shared/posts/reply/reply-item';
 import EmptyState from '@/components/shared/empty-state';
 import { Messages3 } from 'iconsax-react';
 
-export default function PostPage(props: { params: Promise<{ postId: string }> }) {
-  const params = use(props.params);
+interface PostPageProps {
+  params: { postId: string };
+}
+
+export default function PostPage(props: PostPageProps) {
+  const params = props.params;
   const { data, isLoading } = usePosts(params.postId, 'single');
   const replies = data ? data?.replies : [];
 
